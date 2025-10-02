@@ -1,64 +1,64 @@
 
 # osu-ahr
 
-Auto Host Rotation bot for [osu!](https://osu.ppy.sh/home) multiplayer.  
-The host rotation is managed with a queue. Players are added to the queue when joining a multiplayer lobby and are sent to the back of the queue once their beatmap has been played.
+适用于 [osu!](https://osu.ppy.sh/home) 多人游戏的自动Host轮换机器人.
+Host轮换通过队列管理. 玩家在加入房间时会被添加到队列中, 并在游玩后被移至队列末尾.
 
-# Command List
+# 命令列表
 
-## Player Commands
+## 玩家命令
 
-|Command|Description|
+|命令|描述|
 |:--|:--|
-|`!queue`| Shows host queue.|
-|`!skip`| Triggers vote to skip current host.|
-|`!start`| Triggers vote start the match.|
-|`!abort`| Triggers vote abort the match. Use when the match is stuck.|
-|`!update`| Updates current selected map to the latest version. Use when a host picks an outdated map.|
-|`!regulations`| Shows any current regulations.|
-|`!rank`| Show player rank.|
+|`!queue`| 显示当前队列.|
+|`!skip`| 投票换Host.|
+|`!start`| 投票开始游戏.|
+|`!abort`| 投票强制结束游戏, 防止有人网络不佳 ~~卡逼~~ 卡房.|
+|`!update`| 获取当前图的最新版本. |
+|`!regulations`| 查询当前房间的限制.|
+|`!rank`| 显示玩家rank.|
 
-## Host Commands
+## Host 命令
 
-|Command|Description|Example|
+|命令|描述|示例|
 |:--|:--|:--|
-|`!skip`| Transfers host to next player in the queue.||
-|`!start [seconds]`| Starts the match after a set time in seconds.|`!start 30`|
-|`!stop`| Stops active start timer.||
-|`!version` or `!v`| Show bot version.||
+|`!skip`| 将Host转交给队列中的下一个玩家.||
+|`!start [seconds]`| 在`*`秒后开始游戏.|`!start 30`|
+|`!stop`| 取消当前计时器.||
+|`!version` or `!v`| 显示bot版本信息.||
 
-## Administrator Commands
+## 管理员命令
 
-|Command|Description|Example|
+|命令|描述|示例|
 |:--|:--|:--|
-|`*start`|Forces the match to start.||
-|`*skip`|Forces current host to skip.||
-|`*order [players list]`| Reorders the queue in specified order. |`*order p1, p2, p3`|
-|`*keep size [1-16]` | Keeps the size of the lobby at specified number. | `*keep size 8`|
-|`*keep password [password]` | Keeps the lobby password. | `*keep password foobar`|
-|`*keep mode [0-3] [0-3]` | Keeps the lobby team and score mode. | `*keep 0 0`, `*keep HeadToHead Combo` |
-|`*keep mods [mod] ([mod]) ([mod]) ...` | Keeps the lobby allowed mods. | `*keep mods HR DT`|
-|`*keep title [title]` | Keeps the lobby title. | `*keep title 0-2.99* Auto Host Rotate`|
-|`*no keep size` | Stops keeping the size of the lobby at specified number. ||
-|`*no keep password` | Stops keeping the lobby password. ||
-|`*no keep mode` | Stops keeping the team and score mode. ||
-|`*no keep mod` | Stops keeping the lobby allowed mods and set mod to FreeMod. ||
+|`*start`|强制游戏开始.||
+|`*skip`|强制更换Host.||
+|`*order [players list]`| 重新排列队列顺序. |`*order p1, p2, p3`|
+|`*keep size [1-16]` | 修改房间大小. | `*keep size 8`|
+|`*keep password [password]` | 修改房间密码. | `*keep password foobar`|
+|`*keep mode [0-3] [0-3]` | 修改房间模式与计分模式. | `*keep 0 0`, `*keep HeadToHead Combo` |
+|`*keep mods [mod] ([mod]) ([mod]) ...` | 修改房间mod. | `*keep mods HR DT`|
+|`*keep title [title]` | 修改房间标题. | `*keep title 0-2.99* Auto Host Rotate`|
+|`*no keep size` | 不再限制房间人数. ||
+|`*no keep password` | 清空房间密码. ||
+|`*no keep mode` | 修改房间模式与计分模式为默认. ||
+|`*no keep mod` | 修改为FreeMod. ||
 |`*no keep title` | Stops keeping the lobby title. ||
-|`*regulation enable` | Enable Map Checker ||
-|`*regulation disable` | Disable Map Checker. ||
-|`*no regulation` | Disable Map Checker. ||
-|`*regulation min_star [number]` | Changes the lower star cap. If set to 0, the cap will be removed. | `*regulation min_star 2`|
-|`*regulation max_star [number]` | Changes the upper star cap. | `*regulation max_star 6`|
-|`*regulation min_length [sec]` | Changes the minimum allowed map length. | `*regulation min_length 60`|
-|`*regulation max_length [sec]` | Changes the maximum allowed map length. | `*regulation max_length 600`|
-|`*regulation gamemode [osu\|taiko\|fruits\|mania]` | Changes the gamemode. | `*regulation gamemode osu`|
-|`*regulation [name]=[value] [name]=[value]...` | Changes multiple settings. | `*regulation min_star=6.00 max_star=6.99 gameode=taiko`|
-|`*regulation allow_convert` | Allows conversion of maps for alternate game modes. | `*regulation allow_convert`|
-|`*regulation disallow_convert` | Disallows conversion of maps for alternate game modes. | `*regulation disallow_convert`|
-|`*denylist add [username]` | Blacklists a player. | `*denylist add bad_guy` |
-|`*denylist remove [username]` | Removes a player from blacklist. | `*denylist remove bad_guy` |
+|`*regulation enable` | 启用谱面限制 ||
+|`*regulation disable` | 关闭谱面限制. ||
+|`*no regulation` | 关闭谱面限制. ||
+|`*regulation min_star [number]` | 修改允许的谱面最小星数, 若设为0, 则不限制. | `*regulation min_star 2`|
+|`*regulation max_star [number]` | 修改允许的谱面最大星数. | `*regulation max_star 6`|
+|`*regulation min_length [sec]` | 修改允许的谱面最短长度. | `*regulation min_length 60`|
+|`*regulation max_length [sec]` | 修改允许的谱面最长长度. | `*regulation max_length 600`|
+|`*regulation gamemode [osu\|taiko\|fruits\|mania]` | 修改游戏模式. | `*regulation gamemode osu`|
+|`*regulation [name]=[value] [name]=[value]...` | 同时修改多项设置用. | `*regulation min_star=6.00 max_star=6.99 gameode=taiko`|
+|`*regulation allow_convert` | 允许转谱. | `*regulation allow_convert`|
+|`*regulation disallow_convert` | 不允许转谱. | `*regulation disallow_convert`|
+|`*denylist add [username]` | 将玩家加入黑名单. | `*denylist add bad_guy` |
+|`*denylist remove [username]` | 将玩家从黑名单中移除. | `*denylist remove bad_guy` |
 
-Note: Administrator commands are also available on the cli and discord bot. Here are examples of Administrator commands using cli and discord:
+注意：管理员命令也可在 cli 和 discord 机器人上使用。以下是使用 cli 和 discord 的管理员命令示例：
 
 Cli
 
@@ -71,24 +71,6 @@ Discord
 ```text
 /say *keep size 16
 ```
-
-# Recent Changes
-
-## 1.6.1
-
-+ Improve texts and error messages
-  + Fixed grammatical errors and inconsistencies in displayed text
-  + This work was led by [Xayanide](https://github.com/Xayanide). Thanks!
-+ Fixed problem with cli waiting for input when lobby is closed
-+ Log files are now stored separately for chat-related and system-related files.
-
-## 1.6.0
-
-+ Enviroment Variable Supports
-  + Almost all configs that can be set in local.json can also be set from environment variables.
-  + The environment variable name should be in the form `ahr_[category]_[config_name]`.
-  + Improve texts & grammaticalization
-+ Fixed discord Permission Issue.
 
 # Setup
 
