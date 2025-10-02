@@ -7,16 +7,16 @@ import { logIrcEvent, logPrivateMessage } from '../IIrcClient';
 import { CONFIG_OPTION, getIrcConfig } from '../TypedConfig';
 import { applySpeedLimit } from '../libs/ChatLimiter';
 
-const logger = getLogger('pre');
-logger.info('Starting up...');
+const logger = getLogger('预检');
+logger.info('启动中...');
 
 try {
   CONFIG_OPTION.USE_ENV = true;
   const c = getIrcConfig();
   if (c.nick === 'your account id' || c.opt.password === 'you can get password from \'https://osu.ppy.sh/p/irc\'') {
-    logger.error('You must enter your account ID and IRC password in the config file.');
-    logger.error('You can get your IRC password in \'https://osu.ppy.sh/p/irc\' ');
-    logger.error('Copy config/default.json to config/local.json, and then enter your account ID and IRC password.');
+    logger.error('你必须在配置文件中配置你的账号和IRC密码.');
+    logger.error('你可以在此处 \'https://osu.ppy.sh/p/irc\' 获得你的IRC密码 ');
+    logger.error('将 config/default.json 复制为 config/local.json, 配置你的账号和IRC密码.');
     process.exit(1);
   }
 

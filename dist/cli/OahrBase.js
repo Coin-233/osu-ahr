@@ -56,9 +56,9 @@ class OahrBase {
     ensureRegisteredAsync() {
         return new Promise((resolve, reject) => {
             if (!this.isRegistered) {
-                logger.trace('Waiting for registration from osu!Bancho...');
+                logger.trace('等待注册osu!Bancho...');
                 this.client.once('registered', () => {
-                    logger.trace('Registered.');
+                    logger.trace('已注册.');
                     resolve();
                 });
             }
@@ -68,26 +68,24 @@ class OahrBase {
         });
     }
     async makeLobbyAsync(name) {
-        // Remove all but ascii graphic characters
-        name = name.replace(/[^ -~]/g, '');
         if (!this.isRegistered)
             await this.ensureRegisteredAsync();
-        logger.info(`Making a lobby... Name: ${name}`);
+        logger.info(`正在创建房间... 名称: ${name}`);
         await this.lobby.MakeLobbyAsync(name);
         this.lobby.SendMessage(`!mp password ${this.option.password}`);
         for (const p of this.option.invite_users) {
             this.lobby.SendMessage(`!mp invite ${p}`);
         }
-        logger.info(`Successfully made the lobby. Channel: ${this.lobby.channel}`);
+        logger.info(`创建房间成功. 频道: ${this.lobby.channel}`);
     }
     async enterLobbyAsync(id) {
         if (!this.isRegistered)
             await this.ensureRegisteredAsync();
         const channel = CommandParser_1.parser.EnsureMpChannelId(id);
-        logger.info(`Entering a lobby... Channel: ${channel}`);
+        logger.info(`正在加入房间... 频道: ${channel}`);
         await this.lobby.EnterLobbyAsync(channel);
         await this.lobby.LoadMpSettingsAsync();
-        logger.info(`Successfully entered the lobby. Channel: ${this.lobby.channel}`);
+        logger.info(`加入房间成功. 频道: ${this.lobby.channel}`);
     }
 }
 exports.OahrBase = OahrBase;

@@ -120,15 +120,15 @@ class AfkKicker extends LobbyPlugin_1.LobbyPlugin {
         stat.timeLastChange = now;
         stat.afkPoint += delta;
         if (delta > 0) {
-            this.logger.info(`Detected player ${player.escaped_name} is AFK. Reason: ${reason}(${(delta > 0 ? '+' : '') + delta}), ${stat.afkPoint} / ${this.option.threshold}`);
+            this.logger.info(`检测到 ${player.escaped_name} 正在挂机. 原因: ${reason}(${(delta > 0 ? '+' : '') + delta}), ${stat.afkPoint} / ${this.option.threshold}`);
         }
         if (stat.afkPoint < 0) {
             stat.afkPoint = 0;
         }
         else if (this.option.threshold <= stat.afkPoint) {
             this.lobby.SendMessage(`!mp kick ${player.escaped_name}`);
-            this.lobby.SendMessage('Bot: Kicked an AFK player.');
-            this.logger.info(`Kicked player ${player.escaped_name}`);
+            this.lobby.SendMessage('Bot: 已踢出挂机玩家.');
+            this.logger.info(`被踢出 ${player.escaped_name}`);
         }
     }
     onReceivedChatCommand(player, command, param) {
@@ -137,11 +137,11 @@ class AfkKicker extends LobbyPlugin_1.LobbyPlugin {
         switch (command) {
             case '*afkkick_enable':
                 this.option.enabled = true;
-                this.logger.info('AFK Kicker plugin enabled.');
+                this.logger.info('AFK Kicker 已启用.');
                 break;
             case '*afkkick_disable':
                 this.option.enabled = false;
-                this.logger.info('AFK Kicker plugin disabled.');
+                this.logger.info('AFK Kicker 已禁用.');
                 break;
             case '*afkkick_threshold':
                 let th = parseInt(param);

@@ -8,25 +8,24 @@ import { OahrBase } from './OahrBase';
 const logger = getLogger('cli');
 
 const mainMenuCommandsMessage = `
-MainMenu Commands
-  [make <Lobby_name>] Make a lobby, e.g., 'make 5* auto host rotation'
-  [enter <LobbyID>] Enter a lobby, e.g., 'enter 123456' (It will only work with a tournament lobby ID.)
-  [help] Show this message.
-  [quit] Quit this application.
+主菜单命令
+  [make <房间名>] 创建房间, 例如, 'make 5* auto host rotation'
+  [enter <LobbyID>] 加入房间, 例如, 'enter 123456' (只能使用 ID 来加入.)
+  [help] 显示本条消息.
+  [quit] 退出程序.
 `;
 
 const lobbyMenuCommandsMessage = `
-LobbyMenu Commands
-  [say <Message>] Send a message to #multiplayer.
-  [info] Show the application's current information.
-  [reorder] Arrange the host queue, e.g., 'reorder player1, player2, player3'
-  [regulation <regulation command>] Change one or more regulations, e.g., 'regulation star_min=2 star_max=5 length_min=60 length_max=300' 
-  [regulation enable] Enable regulation checking.
-  [regulation disable] Disable regulation checking.
-  [close] Close the lobby when everyone leaves.
-  [close now] Close the lobby and quit this application.
-            Do NOT quit the application before closing the lobby!
-  [quit] Quit this application. (Lobby will not close.)
+房间菜单命令
+  [say <消息>] 将消息发送给#Multiplayer.
+  [info] 显示程序的当前信息.
+  [reorder] 修改Host队伍排序, 例如, 'reorder player1, player2, player3'
+  [regulation <regulation command>] 修改谱面的限制, 例如, 'regulation star_min=2 star_max=5 length_min=60 length_max=300' 
+  [regulation enable] 启用谱面限制.
+  [regulation disable] 关闭谱面限制.
+  [close] 房间中无人时关闭房间.
+  [close now] 关闭房间并退出程序.
+  [quit] 退出程序. (房间不会关闭.)
 `;
 
 interface Scene {
@@ -54,14 +53,14 @@ export class OahrCli extends OahrBase {
           case 'm':
           case 'make':
             if (l.arg === '') {
-              logger.info('Make command needs a lobby name, e.g., \'make testlobby\'');
+              logger.info('需要填入房间名称, 例如, \'make testlobby\'');
               return;
             }
             try {
               await this.makeLobbyAsync(l.arg);
               this.transitionToLobbyMenu();
             } catch (e: any) {
-              logger.info(`Failed to make a lobby:\n${e}`);
+              logger.info(`创建房间失败:\n${e}`);
               this.scene = this.scenes.exited;
             }
             break;
@@ -69,13 +68,13 @@ export class OahrCli extends OahrBase {
           case 'enter':
             try {
               if (l.arg === '') {
-                logger.info('Enter command needs a lobby ID, e.g., \'enter 123456\'');
+                logger.info('请输入房间ID, 例如, \'enter 123456\'');
                 return;
               }
               await this.enterLobbyAsync(l.arg);
               this.transitionToLobbyMenu();
             } catch (e: any) {
-              logger.info(`Invalid channel:\n${e}`);
+              logger.info(`无效的ID:\n${e}`);
               this.scene = this.scenes.exited;
             }
             break;
@@ -96,7 +95,7 @@ export class OahrCli extends OahrBase {
           case '':
             break;
           default:
-            logger.info(`Invalid command: ${line}`);
+            logger.info(`无效的命令: ${line}`);
             break;
         }
       },
@@ -168,8 +167,8 @@ export class OahrCli extends OahrBase {
             break;
           case 'check_order':
             this.lobby.historyRepository.calcCurrentOrderAsName().then(r => {
-              logger.info(`History order = ${r.join(', ')}`);
-              logger.info(`Current order = ${this.selector.hostQueue.map(p => p.name).join(', ')}`);
+              logger.info(`历史队列 = ${r.join(', ')}`);
+              logger.info(`当前队列 = ${this.selector.hostQueue.map(p => p.name).join(', ')}`);
             });
             break;
           case '':
@@ -180,7 +179,7 @@ export class OahrCli extends OahrBase {
             } else if (l.command.startsWith('!') || l.command.startsWith('*')) {
               this.lobby.RaiseReceivedChatCommand(this.lobby.GetOrMakePlayer(this.client.nick), `${l.command} ${l.arg}`);
             } else {
-              console.log(`Invalid command: ${line}`);
+              console.log(`无效的命令: ${line}`);
             }
             break;
         }
@@ -222,10 +221,10 @@ export class OahrCli extends OahrBase {
     }
     const r = rl as readline.Interface;
 
-    logger.trace('Waiting for registration from osu!Bancho...');
-    logger.info('Connecting to osu!Bancho...');
+    logger.trace('等待注册osu!Bancho...');
+    logger.info('正在连接osu!Bancho...');
     this.client.once('registered', () => {
-      logger.info('Connected. :D');
+      logger.info('已连接. :D');
       console.log('\n=== Welcome to osu-ahr ===');
       console.log(mainMenuCommandsMessage);
       r.setPrompt(this.prompt);
@@ -252,11 +251,11 @@ export class OahrCli extends OahrBase {
         logger.info('Readline closed.');
         if (this.client.conn && !this.client.conn.requestedDisconnect) {
           this.client.disconnect('Goodbye.', () => {
-            logger.info('IRC client disconnected.');
+            logger.info('IRC 已断开.');
             process.exit(0);
           });
         } else {
-          logger.info('Exiting...');
+          logger.info('退出中...');
           process.exit(0);
         }
       }

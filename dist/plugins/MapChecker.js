@@ -78,7 +78,7 @@ class MapChecker extends LobbyPlugin_1.LobbyPlugin {
             }
             if (p.num_violations_allowed !== undefined) {
                 this.option.num_violations_allowed = p.num_violations_allowed;
-                this.logger.info(`Number of allowed violations set to ${p.num_violations_allowed}`);
+                this.logger.info(`允许违规次数设置为 ${p.num_violations_allowed}`);
             }
             let changed = false;
             if (p.star_min !== undefined) {
@@ -119,7 +119,7 @@ class MapChecker extends LobbyPlugin_1.LobbyPlugin {
                 changed = true;
             }
             if (changed) {
-                const m = `New regulation: ${this.validator.GetDescription()}`;
+                const m = `新限制: ${this.validator.GetDescription()}`;
                 this.lobby.SendMessage(m);
                 this.logger.info(m);
             }
@@ -141,13 +141,13 @@ class MapChecker extends LobbyPlugin_1.LobbyPlugin {
             return;
         if (v) {
             this.SendPluginMessage('enabledMapChecker');
-            this.lobby.SendMessage('Map Checker plugin enabled.');
-            this.logger.info('Map Checker plugin enabled.');
+            this.lobby.SendMessage('Map Checker 已启用.');
+            this.logger.info('Map Checker 已启用.');
         }
         else {
             this.SendPluginMessage('disabledMapChecker');
-            this.lobby.SendMessage('Map Checker plugin disabled.');
-            this.logger.info('Map Checker plugin disabled.');
+            this.lobby.SendMessage('Map Checker 已禁用.');
+            this.logger.info('Map Checker 已禁用.');
         }
         this.option.enabled = v;
     }
@@ -180,15 +180,15 @@ class MapChecker extends LobbyPlugin_1.LobbyPlugin {
                         break;
                     case BeatmapRepository_1.FetchBeatmapErrorReason.NotFound:
                         this.logger.info(`Beatmap cannot be found. Checked beatmap: ${mapId}`);
-                        this.rejectMap(`[https://osu.ppy.sh/b/${mapId} ${mapTitle}] had already been removed from the website.`, false);
+                        this.rejectMap(`[https://osu.ppy.sh/b/${mapId} ${mapTitle}] 已被删除.`, false);
                         break;
                     case BeatmapRepository_1.FetchBeatmapErrorReason.PlayModeMismatched:
                         this.logger.info(`Gamemode mismatched. Checked beatmap: ${mapId}`);
-                        this.rejectMap(`[https://osu.ppy.sh/b/${mapId} ${mapTitle}] is not ${this.option.gamemode.officialName} beatmap. Pick ${this.option.gamemode.officialName} beatmap.`, false);
+                        this.rejectMap(`[https://osu.ppy.sh/b/${mapId} ${mapTitle}] 不是 ${this.option.gamemode.officialName} 谱面. 请选择 ${this.option.gamemode.officialName} 谱面.`, false);
                         break;
                     case BeatmapRepository_1.FetchBeatmapErrorReason.NotAvailable:
                         this.logger.info(`Beatmap is not available. Checked beatmap: ${mapId}`);
-                        this.rejectMap(`[https://osu.ppy.sh/b/${mapId} ${mapTitle}] is not available for download.`, false);
+                        this.rejectMap(`[https://osu.ppy.sh/b/${mapId} ${mapTitle}] 已无法下载.`, false);
                         break;
                 }
             }
@@ -198,7 +198,7 @@ class MapChecker extends LobbyPlugin_1.LobbyPlugin {
         }
     }
     skipHost() {
-        const msg = `The number of violations has reached ${this.option.num_violations_allowed}. Skipped player ${this.lobby.host?.escaped_name}`;
+        const msg = `违规次数已达到 ${this.option.num_violations_allowed}. 跳过 ${this.lobby.host?.escaped_name}`;
         this.logger.info(msg);
         this.lobby.SendMessage(msg);
         this.SendPluginMessage('skip');
@@ -207,9 +207,9 @@ class MapChecker extends LobbyPlugin_1.LobbyPlugin {
         this.numViolations += 1;
         this.logger.info(`Rejected the beatmap selected by ${this.lobby.host?.escaped_name} (${this.numViolations} / ${this.option.num_violations_allowed})`);
         if (showRegulation) {
-            this.lobby.SendMessage(`!mp map ${this.lastMapId} ${this.option.gamemode.value} | Current regulation: ${this.validator.GetDescription()}`);
+            this.lobby.SendMessage(`!mp map ${this.lastMapId} ${this.option.gamemode.value} | 当前限制: ${this.validator.GetDescription()}`);
             this.lobby.SendMessage(reason);
-            this.lobby.SendMessage('Attention! Star rating will not be calculated correctly if a global mod is applied.');
+            this.lobby.SendMessage('注意! 如果使用全局mod, 将无法正确计算星级评级.');
         }
         else {
             this.lobby.SendMessage(`!mp map ${this.lastMapId} ${this.option.gamemode.value} | ${reason}`);
@@ -261,33 +261,33 @@ class MapValidator {
         const violationMsgs = [];
         const mapmode = Modes_1.PlayMode.from(map.mode);
         if (mapmode !== this.option.gamemode && this.option.gamemode !== null) {
-            violationMsgs.push(`the gamemode is not ${this.option.gamemode.officialName}.`);
+            violationMsgs.push(`游戏模式不是 ${this.option.gamemode.officialName}.`);
             rate += 1;
         }
         if (this.option.star_min > 0 && map.difficulty_rating < this.option.star_min) {
             rate += parseFloat((this.option.star_min - map.difficulty_rating).toFixed(2));
-            violationMsgs.push('the beatmap star rating is lower than the allowed star rating.');
+            violationMsgs.push('小于允许的最低星数.');
         }
         if (this.option.star_max > 0 && this.option.star_max < map.difficulty_rating) {
             rate += parseFloat((map.difficulty_rating - this.option.star_max).toFixed(2));
-            violationMsgs.push('the beatmap star rating is higher than the allowed star rating.');
+            violationMsgs.push('大于允许的最高星数.');
         }
         if (this.option.length_min > 0 && map.total_length < this.option.length_min) {
             rate += (this.option.length_min - map.total_length) / 60.0;
-            violationMsgs.push('the beatmap length is shorter than the allowed length.');
+            violationMsgs.push('短于允许的最小长度.');
         }
         if (this.option.length_max > 0 && this.option.length_max < map.total_length) {
             rate += (map.total_length - this.option.length_max) / 60.0;
-            violationMsgs.push('the beatmap length is longer than the allowed length.');
+            violationMsgs.push('长于允许的最大长度.');
         }
         if (rate > 0) {
             let message;
             const mapDesc = `[${map.url} ${map.beatmapset?.title}] (Star rating: ${map.difficulty_rating}, Length: ${secToTimeNotation(map.total_length)})`;
             if (violationMsgs.length === 1) {
-                message = `${mapDesc} was rejected because ${violationMsgs[0]}`;
+                message = `${mapDesc} 无法选择, 因为 ${violationMsgs[0]}`;
             }
             else {
-                message = `${mapDesc} was rejected because of following reason:\n${violationMsgs.map(m => `- ${m}`).join('\n')}`;
+                message = `${mapDesc} 无法选择, 由于以下原因:\n${violationMsgs.map(m => `- ${m}`).join('\n')}`;
             }
             return { rate, message };
         }
